@@ -2,210 +2,198 @@
 
 #ifndef UNIT136_H
 #define UNIT136_H
+
 #include <iostream>
 #include <vector>
-#include <time.h>
-#include <cmath>
-#include <fstream>
-#include <string>
+#include <ctime> // для rand()
+#include <cmath> // для pow()
+#include <fstream> // для работы с файлами
+#include <string> // для работы со строками
+#include <stdexcept> // для обработки исключений
+
 
 namespace unit136d {
     using namespace std;
-    //функция для записи в массив с именем filename, размера size
+
+    // Функция для записи массива в файл. Передаётся размер массива size_t size, массив, с именем filename
     template<typename T>
     void WrtMasTFile(size_t n, T* numbers, const string& filename) {
-        ofstream outfile(filename); // Открываем файл
+        ofstream outfile(filename); // Создаем поток для записи в файл
 
-        if (!outfile.is_open()) {
-            cerr << "Error`s open " << filename << endl;
+        if (!outfile.is_open()) { // Проверка успешного открытия файла
+            cerr << "Error opening file: " << filename << endl;
             return;
         }
-        outfile << n << " ";
-        // Записываем элементы массива
-        for (int i = 0; i < n; i++) {
+
+        outfile << n << " "; // Записываем размер массива
+
+        // Записываем элементы массива в файл
+        for (size_t i = 0; i < n; i++) {
             outfile << numbers[i] << " ";
         }
 
-        outfile.close();
+        outfile.close(); // Закрываем файл
     }
 
-    //// Функция для загрузки массива из файла с именем filename, размера size 
-    //template<typename T>
-    //void loadArrayFromFile(size_t& size, T* numbers, const string& filename)
-    //{
-    //    ifstream infile(filename);
-    //    if (infile.is_open())
-    //    {
-    //        infile >> size;
-    //        //цикл переписывает значения из файла в массив
-    //        for (size_t i = 0; i < size; ++i)
-    //        {
-    //            infile >> numbers[i];
-    //        }
-    //        infile.close();
-    //    }
-    //    else
-    //    {
-    //        throw runtime_error("Error`s open file for reading: " + filename);
-    //    }
-    //}
-    // Функция для загрузки массива из файла. Сначала определяем размер, потом выделяем память.
+    // Функция для загрузки массива из файла. Передаётся размер массива size_t size, с именем filename
     template <typename T>
     T* loadArrayFromFile(size_t& size, const string& filename) {
-        ifstream infile(filename);
-        if (!infile.is_open()) {
-            throw runtime_error("Ошибка открытия файла для чтения: " + filename);
+        ifstream infile(filename); // Создаем поток для чтения из файла
+
+        if (!infile.is_open()) { // Проверка успешного открытия файла
+            throw runtime_error("Error opening file for reading: " + filename);
         }
 
-        infile >> size; // Считываем размер из файла ПЕРВЫМ делом
+        infile >> size; // Считываем размер массива из файла
 
-        T* arr = new T[size];
+        T* arr = new T[size]; // Выделяем память для массива
+
+        // Считываем элементы массива из файла
         for (size_t i = 0; i < size; ++i) {
             infile >> arr[i];
         }
-        infile.close();
+        infile.close(); // Закрываем файл
         return arr;
     }
 
-    //функция заполения массива в ручную
+    /// Функция для ручного заполнения массива. Передаётся размер массива size_t n, массив
     template<typename T>
-    void zapmas(size_t n, T* numbers) {
+    void fillarray(size_t n, T* numbers) {
         double x;
-        for (int i = 0; i < n; i++) {
+        for (size_t i = 0; i < n; i++) {
             cout << "Input mas[" << i << "] :";
             cin >> x;
             numbers[i] = x;
         }
     }
 
-    //функция заполнения массива случайными числами
+    /// Функция для заполнения массива случайными числами. Передаётся размер массива size_t n, массив
     template<typename T>
-    void zapmasrand(size_t n, T* numbers) {
-        for (int i = 0; i < n; i++)
-        {
-            numbers[i] = rand() % 100;
+    void fillarrayrand(size_t n, T* numbers) {
+        for (size_t i = 0; i < n; i++) {
+            numbers[i] = rand() % 100; // Случайное число от 0 до 99
         }
         cout << " ";
     }
 
-    //формула подсчёта суммы массива использую формулу a1^2 + ... + an^2;
+    /// Функция для вычисления суммы квадратов элементов массива. Передаётся размер массива size_t n, сумма sum, массив
     template<typename T>
-    T SumArray(size_t n, T& sum, const T* numbers) {
-        for (int i = 0; i < n; i++)
-        {
-            sum += pow(numbers[i], 2);
+    T SumArray(size_t n, const T* numbers) {
+        double sum;
+        sum = 0; // Инициализируем сумму
+        for (size_t i = 0; i < n; i++) {
+            sum += pow(numbers[i], 2); // Суммируем квадраты элементов
         }
         return sum;
     }
 
-    //функция вывода массива
+    /// Функция для вывода массива на экран. Передаётся размер массива size_t n, массив
     template<typename T>
     void PrintArray(size_t& n, T* numbers) {
-        n = sizeof(numbers) / sizeof(numbers[0]);
+        // n = sizeof(numbers) / sizeof(numbers[0]); // Эта строка НЕКОРРЕКТНА! sizeof(numbers) вернет размер указателя, а не размер массива.
         for (size_t i = 0; i < n; i++) {
             cout << "mas[" << i << "] = " << numbers[i] << "\n";
         }
     }
 
-    //функция для вывода суммы
+    /// Функция для вывода суммы на экран. Передаётся сумма
     template<typename T>
     void PrintSum(T sum) {
-
         cout << "Sum = " << sum << "\n";
-
     }
 
 
-    //функция для заполения вектора вручную
+    /// Функция для ручного заполнения вектора, передаётся размер вектора size_t n, вектор
     template<typename T>
-    void zapvect(size_t n, std::vector<T>& vect) {
+    void fillvect(size_t n, std::vector<T>& vect) {
         double x;
-        for (int i = 0; i < n; i++) {
+        for (size_t i = 0; i < n; i++) {
             cout << "Input mas[" << i << "] : ";
             cin >> x;
             vect[i] = x;
         }
     }
 
-    //функция для заполнения вектора случайными значениями
+    /// Функция для заполнения вектора случайными числами. Передаётся размер size_t n и вектор 
     template<typename T>
-    void zapvectrand(size_t n, vector<T>& vect) {
-        for (int i = 0; i < n; i++)
-        {
-            vect[i] = rand() % 100;
+    void fillvectrand(size_t n, vector<T>& vect) {
+        for (size_t i = 0; i < n; i++) {
+            vect[i] = rand() % 100; // Случайное число от 0 до 99
         }
         cout << " ";
     }
 
-    //функция для суммы вектора
+    /// Функция для вычисления суммы квадратов элементов вектора. передаётся размер вектора size_t n и вектор vect
     template<typename T>
-    T SumVect(size_t n, T& sum, vector<T> vect) {
-        for (int i = 0; i < n; i++)
-        {
-            sum += pow(vect[i], 2);
+    T SumVect(size_t n, vector<T> vect) {
+        double sum;
+        sum = 0; // Инициализируем сумму
+        for (size_t i = 0; i < n; i++) {
+            sum += pow(vect[i], 2); // Суммируем квадраты элементов
         }
         return sum;
     }
-
-    //функция для вывода вектора
+    
+    /// Функция для вывода вектора на экран, передаётся размер n и вектор
     template<typename T>
     void PrintVect(size_t n, std::vector<T> vect) {
-        for (int i = 0; i < n; i++) {
+        for (size_t i = 0; i < n; i++) {
             cout << "mas[" << i << "] = " << vect[i] << "\n";
         }
     }
 
-    //функция для записи в файл извектора
+    /// Функция для записи вектора в файл размером size_t n, с именем filename
     template<typename T>
     void WrtVectTFile(size_t& n, std::vector<T>& vect, const string& filename) {
-        ofstream outfile(filename); // Открываем файл
+        ofstream outfile(filename); // Создаем поток для записи в файл
 
-        if (!outfile.is_open()) {
-            cerr << "Error`s open " << filename << endl;
+        if (!outfile.is_open()) { // Проверка успешного открытия файла
+            cerr << "Error opening file: " << filename << endl;
             return;
         }
-        outfile << n << " ";
-        // Записываем элементы массива
-        for (int i = 0; i < n; i++) {
+        outfile << n << " "; // Записываем размер вектора
+
+        // Записываем элементы вектора в файл
+        for (size_t i = 0; i < n; i++) {
             outfile << vect[i] << " ";
         }
 
-        outfile.close();
+        outfile.close(); // Закрываем файл
     }
 
-    // Функция для загрузки вектора из файла с именем filename, размера size
+    /// Функция для загрузки вектора из файла с именем filename, размера size_t size
     template<typename T>
     void loadVectFromFile(size_t& size, std::vector<T>& vect, const string& filename) {
-        size = vect.size();
-        ifstream infile(filename);
-        if (infile.is_open())
-        {
-            infile >> size;
-            //цикл переписывает значения зи файла в массив
-            for (size_t i = 0; i < size; ++i)
-            {
+        ifstream infile(filename); // Открываем файл для чтения
 
-                infile >> vect[i];
+        if (infile.is_open()) { // Проверяем, успешно ли открыт файл
+            infile >> size; // Считываем размер вектора из файла
+
+            // Устанавливаем размер вектора, если он не соответствует размеру из файла (это может быть полезно, если вектор был предварительно создан, но его размер нужно изменить)
+            vect.resize(size);
+
+            // Цикл для считывания элементов вектора из файла
+            for (size_t i = 0; i < size; ++i) {
+                infile >> vect[i]; // Считываем i-й элемент вектора из файла
             }
-            infile.close();
+            infile.close(); // Закрываем файл
         }
-        else
-        {
-            throw runtime_error("Error`s open file for reading: " + filename);
+        else {
+            throw runtime_error("Error opening file for reading: " + filename); // Выбрасываем исключение, если файл не удалось открыть
         }
     }
 
 
-    // Тест функции подсчёта суммы элементов массива
+    /// Тест функции подсчёта суммы элементов массива
     void testSumArray();
 
-    // Тест функции подсчёта суммы элементов вектора
+    /// Тест функции подсчёта суммы элементов вектора
     void testSumVect();
 
-    // Проверка сохранения и загрузки вектора
+    /// Проверка сохранения и загрузки вектора
     void testSaveAndLoadVect();
 
-    // Функция запуска тестов
+    /// Функция запуска тестов
     void testall();
 }
 #endif

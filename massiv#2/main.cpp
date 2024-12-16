@@ -29,9 +29,9 @@ int main(void)
         else {
             switch (choise) {
             case 'a': {// Работа с массивом
-                cout << "Load array from file(f) or manually fill(m)?\n"; // Запрос пользователю выбрать способ заполнения массива
+                cout << "Load array from file(f) or manually fill(m) or randomly(r)?\n"; // Запрос пользователю выбрать способ заполнения массива
                 std::cin >> choise;
-                if (choise != 'f' and choise != 'm') {// Проверка на корректность ввода
+                if (choise != 'f' and choise != 'm' and choise != 'r') {// Проверка на корректность ввода
                     throw string("Incorrect Input");
                 }
                 switch (choise)
@@ -40,11 +40,9 @@ int main(void)
                     cout << "Input File name" << "\n";
                     string filename;
                     std::cin >> filename;
-
-                    double sum = 0;
                     double* numbers = loadArrayFromFile<double>(n, filename);// Загружаем массив из файла
                     PrintArray(n, numbers);
-                    PrintSum(SumArray(n, sum, numbers));
+                    PrintSum(SumArray(n, numbers));
                     WrtMasTFile(n, numbers, filename);// Записываем массив обратно в файл
                     delete[] numbers; // Освобождаем память, выделенную под массив
                     numbers = nullptr; // Обнуляем указатель
@@ -52,10 +50,19 @@ int main(void)
                 }
                 case 'm': { // Ручное заполнение массива
                     numbers = new double[n];
-                    zapmas(n, numbers);
-                    double sum = 0;
+                    fillarray(n, numbers);
                     string filename = "text.txt";
-                    PrintSum(SumArray(n, sum, numbers));
+                    PrintSum(SumArray(n, numbers));
+                    WrtMasTFile(n, numbers, filename);
+                    delete[] numbers; // Освобождаем память, выделенную под массив
+                    numbers = nullptr; // Обнуляем указатель
+                    break;
+                }
+                case 'r': { // Рандомное заполнение массива
+                    numbers = new double[n]; //выделение памяти под массив
+                    fillarrayrand(n, numbers);
+                    string filename = "text.txt";
+                    PrintSum(SumArray(n, numbers));
                     WrtMasTFile(n, numbers, filename);
                     delete[] numbers; // Освобождаем память, выделенную под массив
                     numbers = nullptr; // Обнуляем указатель
@@ -66,10 +73,10 @@ int main(void)
             }
 
             case 'v': { // Работа с вектором
-                cout << "Load vector from file (f) or manually fill (m)?\n";
+                cout << "Load vector from file (f) or manually fill (m) or randomly(r)?\n";
                 std::cin >> choise;
-                if (choise != 'f' && choise != 'm') {
-                    throw string("Incorrect input. Choose 'f' or 'm'.");
+                if (choise != 'f' and choise != 'm' and choise != 'r') {
+                    throw string("Incorrect input. Choose 'f' or 'm' or 'r'.");
                 }
                 switch (choise) {
                 case 'f': { // Загрузка вектора из файла
@@ -77,20 +84,25 @@ int main(void)
                     string filename;
                     cout << "Input File name: \n";
                     std::cin >> filename;
-
-                    double sum = 0;
                     loadVectFromFile(n, Vect, filename); // Загружаем вектор из файла
                     PrintVect(n, Vect); // Выводим вектор на экран
-                    PrintSum(SumVect(n, sum, Vect)); // Выводим сумму элементов вектора
+                    PrintSum(SumVect(n, Vect)); // Выводим сумму элементов вектора
                     WrtVectTFile(n, Vect, filename); // Записываем вектор в файл
                     break;
                 }
                 case 'm': { // Ручное заполнение вектора
                     vector<double> Vect(n, 0);
-                    zapvect(n, Vect); // Заполняем вектор
-                    double sum = 0;
+                    fillvect(n, Vect); // Заполняем вектор
                     string filename = "text.txt";
-                    PrintSum(SumVect(n, sum, Vect)); // Выводим сумму элементов вектора
+                    PrintSum(SumVect(n, Vect)); // Выводим сумму элементов вектора
+                    WrtVectTFile(n, Vect, filename); // Записываем вектор в файл
+                    break;
+                }
+                case 'r': { // Ручное заполнение вектора
+                    vector<double> Vect(n, 0);
+                    fillvectrand(n, Vect); // Заполняем вектор
+                    string filename = "text.txt";
+                    PrintSum(SumVect(n, Vect)); // Выводим сумму элементов вектора
                     WrtVectTFile(n, Vect, filename); // Записываем вектор в файл
                     break;
                 }

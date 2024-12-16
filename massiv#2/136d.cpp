@@ -15,13 +15,11 @@ namespace unit136d {
     // Тест функции подсчёта суммы элементов массива
     void testSumArray() {
         int arr[] = { 1, 2, 3 };
-        int sum = 0;
-        int result = SumArray(3, sum, arr);
+        int result = SumArray(3, arr);
         assert(result == 1 * 1 + 2 * 2 + 3 * 3); // 1*1 + 2*2 + 3*3 = 14
 
         double arr2[] = { 1.1, 2.2, 3.3 };
-        double sum2 = 0;
-        double result2 = SumArray(3, sum2, arr2);
+        double result2 = SumArray(3, arr2);
         assert(fabs(result2 - (1.1 * 1.1 + 2.2 * 2.2 + 3.3 * 3.3)) < 1e-9); // Проверка с плавающей точкой
     }
 
@@ -29,13 +27,13 @@ namespace unit136d {
     void testSumVect() {
         std::vector<int> vect = { 1, 2, 3 };
         int sum = 0;
-        int result = SumVect(3, sum, vect);
+        int result = SumVect(3, vect);
         assert(result == 14);
 
         std::vector<double> vect2 = { 1.1, 2.2, 3.3 };
         double sum2 = 0;
-        double result2 = SumVect(3, sum2, vect2);
-        assert(fabs(result2 == (1.1 * 1.1 + 2.2 * 2.2 + 3.3 * 3.3)));
+        double result2 = SumVect(3, vect2);
+        assert(fabs(result2 - (1.1 * 1.1 + 2.2 * 2.2 + 3.3 * 3.3)) < 1e-9);
     }
 
     // Проверка сохранения и загрузки вектора
