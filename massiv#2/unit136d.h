@@ -7,12 +7,13 @@
 #include <time.h>
 #include <cmath>
 #include <fstream>
+#include <string>
 
 namespace unit136d {
     using namespace std;
-    //функция для записи в массив
+    //функция для записи в массив с именем filename, размера size
     template<typename T>
-    void WrtMasTFile(size_t n, T* numbers, const char* filename) {
+    void WrtMasTFile(size_t n, T* numbers, const string& filename) {
         ofstream outfile(filename); // Открываем файл
 
         if (!outfile.is_open()) {
@@ -28,25 +29,42 @@ namespace unit136d {
         outfile.close();
     }
 
-    // Функция для загрузки массива из файла с именем filename, размера size 
-    template<typename T>
-    void loadArrayFromFile(const char* filename, T* numbers, int& size)
-    {
+    //// Функция для загрузки массива из файла с именем filename, размера size 
+    //template<typename T>
+    //void loadArrayFromFile(size_t& size, T* numbers, const string& filename)
+    //{
+    //    ifstream infile(filename);
+    //    if (infile.is_open())
+    //    {
+    //        infile >> size;
+    //        //цикл переписывает значения из файла в массив
+    //        for (size_t i = 0; i < size; ++i)
+    //        {
+    //            infile >> numbers[i];
+    //        }
+    //        infile.close();
+    //    }
+    //    else
+    //    {
+    //        throw runtime_error("Error`s open file for reading: " + filename);
+    //    }
+    //}
+    // Функция для загрузки массива из файла. Сначала определяем размер, потом выделяем память.
+    template <typename T>
+    T* loadArrayFromFile(size_t& size, const string& filename) {
         ifstream infile(filename);
-        if (infile.is_open())
-        {
-            infile >> size;
-            //цикл переписывает значения зи файла в массив
-            for (size_t i = 0; i < size; ++i)
-            {
-                infile >> numbers[i];
-            }
-            infile.close();
+        if (!infile.is_open()) {
+            throw runtime_error("Ошибка открытия файла для чтения: " + filename);
         }
-        else
-        {
-            cerr << "Error`s open .\n";
+
+        infile >> size; // Считываем размер из файла ПЕРВЫМ делом
+
+        T* arr = new T[size];
+        for (size_t i = 0; i < size; ++i) {
+            infile >> arr[i];
         }
+        infile.close();
+        return arr;
     }
 
     //функция заполения массива в ручную
@@ -72,7 +90,7 @@ namespace unit136d {
 
     //формула подсчёта суммы массива использую формулу a1^2 + ... + an^2;
     template<typename T>
-    T SumArray(size_t n, T& sum, T* numbers) {
+    T SumArray(size_t n, T& sum, const T* numbers) {
         for (int i = 0; i < n; i++)
         {
             sum += pow(numbers[i], 2);
@@ -82,8 +100,9 @@ namespace unit136d {
 
     //функция вывода массива
     template<typename T>
-    void PrintArray(size_t n, T* numbers) {
-        for (int i = 0; i < n; i++) {
+    void PrintArray(size_t& n, T* numbers) {
+        n = sizeof(numbers) / sizeof(numbers[0]);
+        for (size_t i = 0; i < n; i++) {
             cout << "mas[" << i << "] = " << numbers[i] << "\n";
         }
     }
@@ -138,7 +157,7 @@ namespace unit136d {
 
     //функция для записи в файл извектора
     template<typename T>
-    void WrtVectTFile(size_t n, std::vector<T>& vect, const char* filename) {
+    void WrtVectTFile(size_t& n, std::vector<T>& vect, const string& filename) {
         ofstream outfile(filename); // Открываем файл
 
         if (!outfile.is_open()) {
@@ -156,7 +175,8 @@ namespace unit136d {
 
     // Функция для загрузки вектора из файла с именем filename, размера size
     template<typename T>
-    void loadVectFromFile(const char* filename, std::vector<T>& vect, size_t& size) {
+    void loadVectFromFile(size_t& size, std::vector<T>& vect, const string& filename) {
+        size = vect.size();
         ifstream infile(filename);
         if (infile.is_open())
         {
@@ -171,11 +191,21 @@ namespace unit136d {
         }
         else
         {
-            cerr << "Error`s open .\n";
+            throw runtime_error("Error`s open file for reading: " + filename);
         }
     }
 
+
+    // Тест функции подсчёта суммы элементов массива
+    void testSumArray();
+
+    // Тест функции подсчёта суммы элементов вектора
+    void testSumVect();
+
+    // Проверка сохранения и загрузки вектора
+    void testSaveAndLoadVect();
+
+    // Функция запуска тестов
+    void testall();
 }
-
-
 #endif
